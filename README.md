@@ -1,69 +1,65 @@
-# React + TypeScript + Vite
+# 🤖 Creative Food Bot
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+> Um chatbot interativo e inteligente que ajuda você a descobrir novas receitas com base nos ingredientes que você tem em mãos.
 
-Currently, two official plugins are available:
+O Creative Food Bot oferece uma interface de chat fluida onde os usuários podem listar ingredientes e receber sugestões de receitas. É possível visualizar detalhes completos, salvar receitas favoritas e gerenciar tudo em uma interface moderna, responsiva e animada.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## ✨ Features
 
-## Expanding the ESLint configuration
+- **Busca de Receitas por Ingredientes**: O usuário seleciona ou digita os ingredientes disponíveis e o bot busca receitas correspondentes.
+- **Interface de Chat Interativa**: As interações acontecem em uma janela de chat, com mensagens do usuário e respostas do bot.
+- **Visualização Detalhada de Receitas**: Um modal exibe a receita completa, com imagem, lista de ingredientes com medidas e instruções passo a passo.
+- **Sistema de Favoritos**: Usuários podem marcar receitas como favoritas e acessá-las facilmente em um painel lateral.
+- **Design Responsivo (Mobile-First)**: A interface é totalmente adaptada para uma experiência de uso perfeita tanto em desktops quanto em dispositivos móveis.
+- **Animações Fluidas**: A experiência do usuário é enriquecida com animações e transições suaves, construídas com Framer Motion.
+- **Feedback de Carregamento**: Skeletons de carregamento são exibidos enquanto o bot processa as informações, melhorando a percepção de performance.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## 🛠️ Tech Stack
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- **Framework**: React
+- **Build Tool**: Vite
+- **Linguagem**: TypeScript
+- **Estilização**: Tailwind CSS
+- **Animações**: Framer Motion
+- **Ícones**: Lucide React
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## 📄 Fonte dos Dados
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Este projeto utiliza a API gratuita do **[TheMealDB](https://www.themealdb.com/api.php)**, uma base de dados aberta e colaborativa de receitas de todo o mundo.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+A URL da API (`https://www.themealdb.com/`) está configurada diretamente nos arquivos de serviço (dentro de `/src/services/api.ts`), conforme a necessidade do projeto.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## 🚀 Como Começar
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+Siga estas instruções para configurar e rodar o projeto em seu ambiente local.
+
+### 📋 Pré-requisitos
+
+- **Node.js**: Versão 18.x ou superior.
+- **Package Manager**: npm, yarn, ou pnpm.
+
+### 📦 Instalação
+
+1.  **Clone o repositório:**
+    ```sh
+    git clone https://github.com/Paulo-VieiraDev/creative-food.git
+    ```
+
+2.  **Navegue até o diretório do projeto:**
+    ```sh
+    cd creative-food 
+    ```
+
+3.  **Instale as dependências:**
+    ```sh
+    npm install
+    ```
+    *(ou `yarn install`, `pnpm install`)*
+
+## ▶️ Rodando a Aplicação
+
+### Servidor de Desenvolvimento
+
+Para iniciar o servidor de desenvolvimento com hot-reloading:
+```sh
+npm run dev
