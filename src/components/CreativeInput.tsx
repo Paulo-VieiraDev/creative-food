@@ -1,6 +1,7 @@
-import { useState, useRef } from 'react';
-import { X, Search, Plus } from 'lucide-react';
+import { useRef } from 'react';
+import { X, Search, Plus, Frown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useIngredientManagement } from '../hooks/useIngredientManagement';
 
 interface Props {
   availableIngredients: string[];
@@ -11,78 +12,118 @@ interface Props {
 }
 
 export const CreativeInput = ({ availableIngredients, selectedIngredients, setSelectedIngredients, onSearch, isLoading }: Props) => {
-  const [searchTerm, setSearchTerm] = useState('');
   const inputRef = useRef<HTMLInputElement>(null);
-
-  const filteredIngredients = searchTerm
-    ? availableIngredients.filter(ing => !selectedIngredients.includes(ing) && ing.toLowerCase().includes(searchTerm.toLowerCase())).slice(0, 4)
-    : [];
   
-  const handleAddIngredient = (ingredient: string) => {
-    if (!selectedIngredients.includes(ingredient)) {
-      setSelectedIngredients(prev => [...prev, ingredient]);
-    }
-    setSearchTerm('');
-    inputRef.current?.focus();
-  };
+  const {
+    searchTerm,
+    setSearchTerm,
+    filteredIngredients,
+    addIngredient,
+    removeIngredient,
+    handleKeyDown,
+  } = useIngredientManagement(availableIngredients, selectedIngredients, setSelectedIngredients);
 
-  const handleRemoveIngredient = (ingredient: string) => {
-    setSelectedIngredients(prev => prev.filter(ing => ing !== ingredient));
-  };
-
+  const showSuggestions = searchTerm.length > 0;
+  
   return (
-    <div className="w-full max-w-2xl mx-auto flex flex-col gap-3">
+    <div className="w-full flex flex-col gap-4">
       <AnimatePresence>
         {selectedIngredients.length > 0 && (
-            <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-                className="flex flex-wrap gap-2 items-center justify-center"
-            >
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="flex flex-wrap gap-2 items-center justify-center"
+            aria-label="Selected ingredients"
+          >
             {selectedIngredients.map(ing => (
-                <motion.div key={ing} layout initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.5 }} className="bg-surface-2 text-ink-primary px-3 py-1 rounded-full flex items-center gap-2 text-sm font-medium">
+              <motion.div
+                key={ing}
+                layout
+                initial={{ opacity: 0, scale: 0.5 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.5 }}
+                className="bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-100 px-3 py-1.5 rounded-full flex items-center gap-2 text-sm font-medium"
+              >
                 <span>{ing}</span>
-                <button onClick={() => handleRemoveIngredient(ing)} className="text-ink-subtle hover:text-red-500">
-                    <X size={14} />
+                <button
+                  onClick={() => removeIngredient(ing)}
+                  aria-label={`Remove ${ing}`}
+                  className="cursor-pointer text-gray-500 dark:text-gray-400 rounded-full p-0.5 hover:bg-red-500 hover:text-white transition-colors"
+                >
+                  <X size={16} />
                 </button>
-                </motion.div>
+              </motion.div>
             ))}
-            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
 
       <div className="relative">
-        <div className="flex items-center gap-3 w-full">
-            <div className="relative flex-grow">
-                <input
-                    ref={inputRef}
-                    type="text"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    placeholder="Search for an ingredient..."
-                    disabled={isLoading}
-                    className="w-full bg-surface-2 border border-surface-3 rounded-lg p-3 pl-4 text-ink-primary focus:ring-2 focus:ring-accent focus:outline-none"
-                />
-                <AnimatePresence>
-                    {filteredIngredients.length > 0 && (
-                        <motion.ul initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -10 }} className="absolute bottom-full w-full mb-2 bg-surface-1 border border-surface-2 rounded-lg shadow-lg z-10 overflow-hidden">
-                        {filteredIngredients.map(ing => (
-                            <li key={ing} className="p-3 hover:bg-surface-2 cursor-pointer text-sm text-ink-primary flex items-center justify-between" onClick={() => handleAddIngredient(ing)}>
-                            {ing}
-                            <button className="p-1 rounded-full bg-surface-2 hover:bg-accent hover:text-surface-0">
-                                <Plus size={16} />
-                            </button>
-                            </li>
-                        ))}
-                        </motion.ul>
-                    )}
-                </AnimatePresence>
-            </div>
-            <button onClick={onSearch} disabled={selectedIngredients.length === 0 || isLoading} className="h-12 px-6 rounded-lg flex items-center justify-center flex-shrink-0 transition-all bg-accent text-surface-0 font-bold hover:bg-accent-dark active:scale-95 disabled:bg-surface-3 disabled:text-ink-subtle disabled:cursor-not-allowed">
-                <Search size={20} className="mr-2 md:hidden" />
-                <span className="hidden md:block">Find Recipes</span>
-            </button>
+        <label htmlFor="ingredient-search" className="sr-only">
+          Search for an ingredient
+        </label>
+        <div className="flex items-center gap-2 sm:gap-3 w-full">
+          <div className="relative flex-grow">
+            <input
+              id="ingredient-search"
+              ref={inputRef}
+              type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="e.g., tomato, onion, garlic..."
+              disabled={isLoading}
+              className="w-full bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-lg p-3 pl-4 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              role="combobox"
+              aria-expanded={showSuggestions && filteredIngredients.length > 0}
+              aria-controls="ingredient-suggestions"
+            />
+            <AnimatePresence>
+              {showSuggestions && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="absolute bottom-full w-full mb-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg z-10 overflow-hidden"
+                >
+                  {filteredIngredients.length > 0 ? (
+                    <ul id="ingredient-suggestions" role="listbox">
+                      {filteredIngredients.map(ing => (
+                        <li
+                          key={ing}
+                          role="option"
+                          aria-selected="false"
+                          className="p-3 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer text-sm text-gray-900 dark:text-gray-100 flex items-center justify-between transition-colors"
+                          onClick={() => {
+                            addIngredient(ing);
+                            inputRef.current?.focus();
+                          }}
+                        >
+                          {ing}
+                          <div className="p-1 rounded-full bg-gray-200 dark:bg-gray-600 text-gray-500 dark:text-gray-300">
+                            <Plus size={16} />
+                          </div>
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <div className="p-3 text-center text-sm text-gray-500 dark:text-gray-400 flex items-center justify-center gap-2">
+                       <Frown size={16}/> No ingredients found.
+                    </div>
+                  )}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+          <button
+            onClick={onSearch}
+            disabled={selectedIngredients.length === 0 || isLoading}
+            className="h-12 px-4 sm:px-6 rounded-lg flex items-center justify-center flex-shrink-0 font-bold transition-all duration-200 ease-in-out bg-blue-600 text-white active:scale-95 disabled:bg-gray-300 dark:disabled:bg-gray-700 disabled:text-gray-500 disabled:cursor-not-allowed cursor-pointer hover:bg-blue-700 hover:-translate-y-0.5"
+          >
+            <Search size={20} className="sm:mr-2" />
+            <span className="hidden sm:block">Search</span>
+          </button>
         </div>
       </div>
     </div>

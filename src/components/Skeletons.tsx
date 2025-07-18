@@ -2,7 +2,7 @@ import { motion } from 'framer-motion';
 
 const SkeletonBubble = () => (
   <div className="flex items-end gap-3 justify-start">
-    <div className="bg-slate-200 px-4 py-3 rounded-2xl rounded-bl-none shadow-sm w-full max-w-sm h-32 animate-pulse" />
+    <div className="bg-gray-200 dark:bg-gray-800 px-4 py-3 rounded-2xl rounded-bl-none shadow-sm w-full max-w-sm h-32 animate-pulse" />
   </div>
 );
 

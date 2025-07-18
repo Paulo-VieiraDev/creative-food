@@ -24,7 +24,7 @@ export const ChatWindow = ({ messages, isLoading, favorites, onSelectRecipe, onT
       <AnimatePresence initial={false}>
         {messages.map((msg) => (
           <motion.div key={msg.id} layout initial={{ opacity: 0, y: 20, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, x: -20, scale: 0.95 }} className={`flex items-start gap-3 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-            <div className={`px-4 py-3 rounded-xl shadow-sm flex flex-col max-w-[85%] md:max-w-2xl text-left ${msg.role === 'user' ? 'bg-accent text-surface-0 rounded-br-none' : 'bg-surface-2 text-ink-primary rounded-bl-none'}`}>
+            <div className={`px-4 py-3 rounded-xl shadow-sm flex flex-col max-w-[85%] md:max-w-2xl text-left ${msg.role === 'user' ? 'bg-blue-600 text-white rounded-br-none' : 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-bl-none'}`}>
               <p className="whitespace-pre-wrap">{msg.text}</p>
               {msg.recipes && msg.recipes.length > 0 && (
                 <div className="mt-3 flex flex-col gap-2">
